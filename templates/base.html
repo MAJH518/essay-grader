@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 英语作文批改</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex items-center gap-3">
+            <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">AI</div>
+            <div>
+                <h1 class="text-xl font-bold text-gray-900">AI 英语作文批改</h1>
+                <p class="text-sm text-gray-500">即时 AI 反馈，提升你的英语写作水平</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="text-center text-sm text-gray-400 py-6">
+        由 DeepSeek AI 驱动 &middot; 你的作文将发送至 DeepSeek API 进行处理
+    </footer>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

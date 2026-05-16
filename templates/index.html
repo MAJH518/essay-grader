@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Input Form Section -->
+<div id="form-section" class="visible-section">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="mb-4">
+            <label for="topic" class="block text-sm font-medium text-gray-700 mb-1">作文题目（选填）</label>
+            <input type="text" id="topic" name="topic" maxlength="200"
+                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                   placeholder="例如：社交媒体对青少年的影响">
+        </div>
+
+        <div class="mb-4">
+            <label for="essay-type" class="block text-sm font-medium text-gray-700 mb-1">作文类型</label>
+            <select id="essay-type" name="essay_type"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-white">
+                <option value="general">通用</option>
+                <option value="argumentative">议论文</option>
+                <option value="narrative">记叙文</option>
+                <option value="descriptive">描写文</option>
+            </select>
+        </div>
+
+        <div class="mb-2">
+            <label for="essay-text" class="block text-sm font-medium text-gray-700 mb-1">你的作文</label>
+            <textarea id="essay-text" name="essay_text" rows="16"
+                      class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition resize-y"
+                      placeholder="在此粘贴或输入你的英语作文...（至少 50 个字符）"></textarea>
+        </div>
+
+        <div class="flex justify-between items-center mb-4">
+            <span id="char-count" class="text-sm text-gray-400">0 / 5000 字符</span>
+            <button id="example-btn" class="text-sm text-blue-600 hover:text-blue-800 transition">加载示例作文</button>
+        </div>
+
+        <div id="form-error" class="hidden mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm"></div>
+
+        <button id="submit-btn"
+                class="w-full py-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed">
+            开始批改
+        </button>
+    </div>
+</div>
+
+<!-- Loading Section -->
+<div id="loading-section" class="hidden-section text-center py-20">
+    <div class="inline-block w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-4"></div>
+    <p class="text-gray-600 text-lg">AI 正在批改你的作文...</p>
+    <p class="text-gray-400 text-sm mt-1">预计等待 5-15 秒</p>
+</div>
+
+<!-- Error Section -->
+<div id="error-section" class="hidden-section">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center">
+        <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-red-500 text-xl font-bold">!</span>
+        </div>
+        <h3 class="text-lg font-semibold text-gray-900 mb-2">批改失败</h3>
+        <p id="error-message" class="text-gray-600 mb-4"></p>
+        <button id="retry-btn"
+                class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition">
+            重试
+        </button>
+    </div>
+</div>
+
+<!-- Result Section -->
+<div id="result-section" class="hidden-section">
+    <!-- Overall Score Card -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-20 h-20 rounded-full border-4 border-blue-500 flex items-center justify-center">
+                    <span id="total-score" class="text-2xl font-bold text-blue-600">0</span>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-gray-900">综合评分</h2>
+                    <span id="grade-badge" class="inline-block px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold mt-1">-</span>
+                </div>
+            </div>
+            <button id="grade-again-btn"
+                    class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition text-sm">
+                再批一篇
+            </button>
+        </div>
+        <p id="summary-text" class="mt-4 text-gray-700 leading-relaxed"></p>
+    </div>
+
+    <!-- Score Breakdown -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">评分明细</h3>
+        <div class="space-y-4">
+            <div class="flex items-center gap-3">
+                <span class="w-24 text-sm font-medium text-gray-600">语法</span>
+                <div class="flex-1 bg-gray-100 rounded-full h-4 overflow-hidden">
+                    <div id="bar-grammar" class="score-bar h-full bg-blue-500 rounded-full" style="width: 0%"></div>
+                </div>
+                <span id="score-grammar" class="text-sm font-semibold text-gray-700 w-12 text-right">0/25</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="w-24 text-sm font-medium text-gray-600">词汇</span>
+                <div class="flex-1 bg-gray-100 rounded-full h-4 overflow-hidden">
+                    <div id="bar-vocabulary" class="score-bar h-full bg-green-500 rounded-full" style="width: 0%"></div>
+                </div>
+                <span id="score-vocabulary" class="text-sm font-semibold text-gray-700 w-12 text-right">0/25</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="w-24 text-sm font-medium text-gray-600">结构</span>
+                <div class="flex-1 bg-gray-100 rounded-full h-4 overflow-hidden">
+                    <div id="bar-structure" class="score-bar h-full bg-purple-500 rounded-full" style="width: 0%"></div>
+                </div>
+                <span id="score-structure" class="text-sm font-semibold text-gray-700 w-12 text-right">0/25</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="w-24 text-sm font-medium text-gray-600">内容</span>
+                <div class="flex-1 bg-gray-100 rounded-full h-4 overflow-hidden">
+                    <div id="bar-content" class="score-bar h-full bg-orange-500 rounded-full" style="width: 0%"></div>
+                </div>
+                <span id="score-content" class="text-sm font-semibold text-gray-700 w-12 text-right">0/25</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Details Tabs -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="flex border-b border-gray-200 overflow-x-auto">
+            <button class="tab-btn px-4 py-3 text-sm font-medium text-blue-600 border-b-2 border-blue-500 whitespace-nowrap" data-category="grammar">语法</button>
+            <button class="tab-btn px-4 py-3 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700 whitespace-nowrap" data-category="vocabulary">词汇</button>
+            <button class="tab-btn px-4 py-3 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700 whitespace-nowrap" data-category="structure">结构</button>
+            <button class="tab-btn px-4 py-3 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700 whitespace-nowrap" data-category="content">内容</button>
+        </div>
+
+        <div id="tab-contents" class="p-6">
+            <!-- Dynamically filled by JS -->
+        </div>
+    </div>
+</div>
+
+{% endblock %}
