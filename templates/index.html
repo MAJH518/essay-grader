@@ -72,6 +72,34 @@
     </div>
 </div>
 
+<!-- Focus Result Section -->
+<div id="focus-result-section" class="hidden-section">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                <h2 class="text-xl font-bold text-gray-900">
+                    批改结果 · <span id="focus-area-label" class="text-blue-600"></span>
+                </h2>
+            </div>
+            <button id="focus-grade-again-btn"
+                    class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition text-sm">
+                再批一篇
+            </button>
+        </div>
+        <p id="focus-summary-text" class="text-gray-700 leading-relaxed mb-6"></p>
+
+        <div id="focus-perfect-badge" class="hidden text-center py-8">
+            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span class="text-green-500 text-3xl">&#10003;</span>
+            </div>
+            <p class="text-lg font-semibold text-green-700">无错误</p>
+            <p class="text-gray-500 text-sm mt-1">该方面写得很好，继续保持！</p>
+        </div>
+
+        <div id="focus-corrections-list" class="space-y-4"></div>
+    </div>
+</div>
+
 <!-- Result Section -->
 <div id="result-section" class="hidden-section">
     <!-- Overall Score Card -->

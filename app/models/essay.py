@@ -54,6 +54,21 @@ class GradingResult(BaseModel):
     summary: str
 
 
+class SentenceCorrection(BaseModel):
+    """逐句纠正：聚焦模式下的输出单元"""
+    original: str
+    corrected: str
+    explanation: str
+
+
+class FocusResult(BaseModel):
+    """聚焦批改结果：不评四维分，只返回有错句子的修改"""
+    focus_area: str
+    corrections: list[SentenceCorrection]
+    perfect: bool = False
+    summary: str
+
+
 class APIError(BaseModel):
     detail: str
     error_code: str

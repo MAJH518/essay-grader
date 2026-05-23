@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const loadingSection = document.getElementById("loading-section");
     const errorSection = document.getElementById("error-section");
     const resultSection = document.getElementById("result-section");
+    const focusResultSection = document.getElementById("focus-result-section");
 
     const essayText = document.getElementById("essay-text");
     const topicInput = document.getElementById("topic");
@@ -69,8 +70,9 @@ In conclusion, while technology presents certain challenges, its benefits to mod
     }
 
     // --- Section Visibility ---
+    const allSections = [formSection, loadingSection, errorSection, resultSection, focusResultSection];
     function showSection(section) {
-        [formSection, loadingSection, errorSection, resultSection].forEach((s) => {
+        allSections.forEach((s) => {
             if (s === section) {
                 s.classList.remove("hidden-section");
                 s.classList.add("visible-section");
@@ -124,8 +126,13 @@ In conclusion, while technology presents certain challenges, its benefits to mod
             }
 
             gradingData = await response.json();
-            renderResults(gradingData);
-            showSection(resultSection);
+            if (gradingData.focus_area !== undefined) {
+                renderFocusResults(gradingData);
+                showSection(focusResultSection);
+            } else {
+                renderResults(gradingData);
+                showSection(resultSection);
+            }
             window.scrollTo({ top: 0, behavior: "smooth" });
         } catch (err) {
             showSection(errorSection);
@@ -141,6 +148,8 @@ In conclusion, while technology presents certain challenges, its benefits to mod
             e.preventDefault();
             if (formSection.classList.contains("visible-section")) {
                 submitBtn.click();
+            } else if (focusResultSection.classList.contains("visible-section")) {
+                document.getElementById("focus-grade-again-btn").click();
             }
         }
     });
@@ -182,6 +191,49 @@ In conclusion, while technology presents certain challenges, its benefits to mod
         // Render first tab (grammar)
         switchTab("grammar");
     }
+
+    // --- Render Focus Results ---
+    function renderFocusResults(data) {
+        document.getElementById("focus-area-label").textContent = data.focus_area;
+        document.getElementById("focus-summary-text").textContent = data.summary;
+
+        const perfectBadge = document.getElementById("focus-perfect-badge");
+        const correctionsList = document.getElementById("focus-corrections-list");
+
+        if (data.perfect) {
+            perfectBadge.classList.remove("hidden");
+            correctionsList.innerHTML = "";
+        } else {
+            perfectBadge.classList.add("hidden");
+            let html = "";
+            data.corrections.forEach((c) => {
+                html += `
+                <div class="correction-card bg-gray-50 rounded-lg p-4">
+                    <div class="mb-2">
+                        <span class="text-xs text-gray-400 uppercase tracking-wide">原文：</span>
+                        <span class="original-text">${escapeHtml(c.original)}</span>
+                    </div>
+                    <div class="mb-2">
+                        <span class="text-xs text-gray-400 uppercase tracking-wide">修改后：</span>
+                        <span class="corrected-text">${escapeHtml(c.corrected)}</span>
+                    </div>
+                    <div class="text-sm text-gray-600">${escapeHtml(c.explanation)}</div>
+                </div>`;
+            });
+            correctionsList.innerHTML = html;
+        }
+    }
+
+    // --- Focus Grade Again ---
+    document.getElementById("focus-grade-again-btn").addEventListener("click", () => {
+        essayText.value = "";
+        topicInput.value = "";
+        essayType.value = "general";
+        focusInput.value = "";
+        updateCharCount();
+        showSection(formSection);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    });
 
     // --- Tab Switching ---
     window.switchTab = function (category) {

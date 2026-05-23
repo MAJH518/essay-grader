@@ -6,7 +6,7 @@ from fastapi.responses import HTMLResponse
 from jinja2 import Environment, FileSystemLoader
 from openai import AuthenticationError, RateLimitError, APITimeoutError
 
-from app.models.essay import EssaySubmission, GradingResult
+from app.models.essay import EssaySubmission, GradingResult, FocusResult
 from app.services import get_grader
 from app.services.grader import EssayGrader
 
@@ -21,7 +21,7 @@ async def home(request: Request):
     return HTMLResponse(template.render({"request": request}))
 
 
-@router.post("/api/grade", response_model=GradingResult)
+@router.post("/api/grade", response_model=GradingResult | FocusResult)
 async def grade_essay(
     submission: EssaySubmission,
     grader: EssayGrader = Depends(get_grader),
