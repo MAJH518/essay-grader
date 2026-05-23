@@ -31,6 +31,7 @@ async def grade_essay(
             submission.essay_text,
             submission.topic,
             submission.essay_type,
+            submission.focus,
         )
         return result
     except AuthenticationError:

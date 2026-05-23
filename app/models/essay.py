@@ -17,6 +17,11 @@ class EssaySubmission(BaseModel):
         "general",
         pattern=r"^(general|argumentative|narrative|descriptive)$",
     )
+    focus: str | None = Field(
+        None,
+        max_length=500,
+        description="Optional: specific aspects to focus grading on",
+    )
 
     @field_validator("essay_text")
     @classmethod

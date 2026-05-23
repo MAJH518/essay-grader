@@ -18,8 +18,9 @@ class EssayGrader:
         essay_text: str,
         topic: str | None,
         essay_type: str,
+        focus: str | None = None,
     ) -> GradingResult:
-        user_prompt = build_user_prompt(essay_text, topic, essay_type)
+        user_prompt = build_user_prompt(essay_text, topic, essay_type, focus)
 
         last_error = None
         for attempt in range(self.max_retries + 1):

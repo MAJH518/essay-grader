@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const essayText = document.getElementById("essay-text");
     const topicInput = document.getElementById("topic");
     const essayType = document.getElementById("essay-type");
+    const focusInput = document.getElementById("focus");
     const charCount = document.getElementById("char-count");
     const submitBtn = document.getElementById("submit-btn");
     const formError = document.getElementById("form-error");
@@ -113,6 +114,7 @@ In conclusion, while technology presents certain challenges, its benefits to mod
                     essay_text: essayText.value.trim(),
                     topic: topicInput.value.trim() || null,
                     essay_type: essayType.value,
+                    focus: focusInput.value.trim() || null,
                 }),
             });
 
@@ -267,6 +269,7 @@ In conclusion, while technology presents certain challenges, its benefits to mod
         essayText.value = "";
         topicInput.value = "";
         essayType.value = "general";
+        focusInput.value = "";
         updateCharCount();
         showSection(formSection);
         window.scrollTo({ top: 0, behavior: "smooth" });
